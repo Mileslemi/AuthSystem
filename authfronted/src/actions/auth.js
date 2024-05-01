@@ -4,7 +4,50 @@ import {
   LOAD_USER_SUCCESS,
   LOGIN_FAIL,
   LOGIN_SUCCESS,
+  AUTH_SUCCESS,
+  AUTH_FAIL,
+  LOGOUT,
 } from "./types";
+
+export const checkAuthenticated = () => async (dispatch) => {
+  console.log("Checking Authentication");
+  if (localStorage.getItem("access")) {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+
+    const body = JSON.stringify({ token: localStorage.getItem("access") });
+
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/auth/jwt/verify/`,
+        body,
+        config
+      );
+      // or res
+      if (response && response.data.code !== "token_not_valid") {
+        dispatch({
+          type: AUTH_SUCCESS,
+        });
+      } else {
+        dispatch({
+          type: AUTH_FAIL,
+        });
+      }
+    } catch (error) {
+      dispatch({
+        type: AUTH_FAIL,
+      });
+    }
+  } else {
+    dispatch({
+      type: AUTH_FAIL,
+    });
+  }
+};
 
 export const login = (email, password) => async (dispatch) => {
   const config = {
@@ -65,4 +108,10 @@ export const load_user = () => async (dispatch) => {
       type: LOAD_USER_FAIL,
     });
   }
+};
+
+export const logout = () => (dispath) => {
+  dispath({
+    type: LOGOUT,
+  });
 };

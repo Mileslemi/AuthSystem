@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Container,
@@ -7,10 +7,13 @@ import {
   FormGroup,
 } from "react-bootstrap";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, redirect, useNavigate, Navigate } from "react-router-dom";
 import { login } from "../actions/auth";
+import { Redirect } from "react";
 
-const Login = ({ login }) => {
+const Login = ({ login, isAuthenticated }) => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -26,6 +29,11 @@ const Login = ({ login }) => {
     login(email, password);
   };
   // if user is authenticated, redirect to home page
+
+  if (isAuthenticated) {
+    return <Navigate to="/" />;
+  }
+
   return (
     <Container className="mt-5">
       <h1>Sign In</h1>
@@ -68,7 +76,9 @@ const Login = ({ login }) => {
   );
 };
 
-const mapStateToProps = (state) => ({});
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+});
 
 // The connect() function connects a React component to a Redux store. It provides its connected component with the pieces of the data it needs from the store, and the functions it can use to dispatch actions to the store.
-export default connect(null, { login })(Login);
+export default connect(mapStateToProps, { login })(Login);
