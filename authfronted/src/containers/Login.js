@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Button,
   Container,
@@ -7,13 +7,10 @@ import {
   FormGroup,
 } from "react-bootstrap";
 import { connect } from "react-redux";
-import { Link, redirect, useNavigate, Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { login } from "../actions/auth";
-import { Redirect } from "react";
 
 const Login = ({ login, isAuthenticated }) => {
-  const navigate = useNavigate();
-
   const [formData, setFormData] = useState({
     email: "",
     password: "",
